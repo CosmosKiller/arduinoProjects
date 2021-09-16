@@ -86,7 +86,7 @@ void loop()
       
       		motorSpeed(rotSpeed); //Setting rotation speed
       		motion(HIGH, LOW, LOW, HIGH); //Rotating the robot to the right
-      	delay(500);
+      		delay(500);
       	
         	motion(LOW, LOW, LOW, LOW);//Stoping the robot
       		delay(500);
