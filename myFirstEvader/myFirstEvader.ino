@@ -1,5 +1,5 @@
 
-const int btn1 = 7; //Button to initiate program
+const int btn1 = 12; //Button to initiate program
 const int sensor1 = 2; //Obstacule sensor
 const int pwm1 = 10; //PWM output 1
 const int pwm2 = 11; //PWM output 2
@@ -33,15 +33,15 @@ void start_stop() //Function to start or stop the evader
 {
     if (btnState == LOW)
     {
-    	if (btnValue == HIGH)
+      if (btnValue == HIGH)
         {
-          	btnValue == LOW;
-          	delay(500);
+            btnValue = LOW;
+            delay(500);
         }
-      	else
+        else
         {
-          	btnValue == HIGH;
-          	delay(500);
+            btnValue = HIGH;
+            delay(500);
         }
     }
 }
@@ -57,28 +57,30 @@ void setup()
 	  pinMode(motor1B, OUTPUT);
 	  pinMode(motor2A, OUTPUT);
 	  pinMode(motor2B, OUTPUT);
-    pinMode(13, OUTPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
+
+    Serial.begin(9600);
 }
 
 void loop()
 {
-  /*	btnState = digitalRead(btn1); //In order to initialize the program you must press the button
+    btnState = digitalRead(btn1); //In order to initialize the program you must press the button
+    delay(500);
     start_stop();
   
-  	while (btnValue = LOW)
-  	{
-  */
+  while (btnValue == LOW)
+ 	{
 		sensor1State = digitalRead(sensor1); //Seraching for an obstacule
   	
   		if (sensor1State == HIGH) //No obstacule
     	{
-          digitalWrite(13, LOW);
+          digitalWrite(LED_BUILTIN, LOW);
       		motorSpeed(fwdSpeed); //Setting fwd speed 
 		    	motion(HIGH, HIGH, LOW, LOW); //Setting fwd motion
     	}
   		else
     	{
-          digitalWrite(13, HIGH);
+          digitalWrite(LED_BUILTIN, HIGH);
 			    motion(LOW, LOW, LOW, LOW); //Stoping the robot
       		delay(500);
       
@@ -97,9 +99,7 @@ void loop()
       		delay(500);
     	}
     
-    /*
       btnState = digitalRead(btn1); //This time, in order to finalize the program you must press the button
-  		start_stop();
-  	}
-  	*/ 
+      start_stop();
+   }
 }
