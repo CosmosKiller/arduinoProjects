@@ -94,6 +94,21 @@ void evasionProtocol()
 {
 	int srvScanL = servoScanLeft();
 	int srvScanR = servoScanRight();
+
+	/* Erease this comment in case of using this while loop instead of recursion
+	while (srvScanL == LOW && srvScanR == LOW)
+	{
+		motorSpeed(bwdSpeed); //Setting bwd speed
+      	motion(LOW, LOW, HIGH, HIGH); //Setting bwd motion
+      	delay(500);
+      
+      	motion(LOW, LOW, LOW, LOW);//Stoping the robot
+      	delay(500);		
+		
+		int srvScanL = servoScanLeft();
+		int srvScanR = servoScanRight();
+	}
+	*/
 	
 	if (srvScanL == LOW && srvScanR == HIGH) //An obstacle is detect in the left side but not in the right side
 	{											
@@ -113,7 +128,7 @@ void evasionProtocol()
     	motion(LOW, HIGH, HIGH, LOW); //As there is no obstacle, you could choose to make the robot rotate either left o right
     	delay(500);					
 	}
-	else //Obstacles are detect on both sides
+	else //Obstacles are detect on both sides (Comment this whole section in case of using the above while loop instead of recursion)
 	{
 		motorSpeed(bwdSpeed); //Setting bwd speed
       	motion(LOW, LOW, HIGH, HIGH); //Setting bwd motion
