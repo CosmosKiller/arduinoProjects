@@ -54,47 +54,55 @@ void start_stop() //Function to start or stop the evader
 
 int servoScanLeft()
 {
-	myServo.attach(srv1);
-
 	myServo.write(180); //The srv rotates towards left
-	if (digitalRead(sensor1) == LOW) //Obsatcle detected
-	{
+	delay(1000);
+	int leftSense = digitalRead(sensor1);
+	delay(500);
+  
+	if (leftSense == LOW) //Obsatcle detected
+	{	
+		Serial.println("Obstacle in the left");
 		srvScanLeft = LOW;
 	}
 	else
-	{
+	{	
+		Serial.println("No obstacle in the left");
 		srvScanLeft = HIGH;
 	}
-
-	myServo.detach();
 
 	return srvScanLeft;
 }
 
 int servoScanRight()
 {
-	myServo.attach(srv1);
-
 	myServo.write(0); //The srv rotates towards right
-	if (digitalRead(sensor1) == LOW) //Obsatcle detected
-	{
+	delay(1000);
+	int rightSense = digitalRead(sensor1);
+	delay(500);
+
+	if (rightSense == LOW) //Obsatcle detected
+	{	
+		Serial.println("Obstacle in the right");
 		srvScanRight = LOW;
 	}
 	else
-	{
+	{	
+		Serial.println("No obstacle in the right");
 		srvScanRight = HIGH;
 	}	
 
-	myServo.detach();
-
-	return srvScanLeft;
+	return srvScanRight;
 }
 
 void evasionProtocol()
-{
+{ 
+  	myServo.attach(srv1);
 	int srvScanL = servoScanLeft();
 	int srvScanR = servoScanRight();
-
+ 	myServo.write(90);
+  	delay(1000);
+  	myServo.detach();
+  
 	/* Erease this comment in case of using this while loop instead of recursion
 	while (srvScanL == LOW && srvScanR == LOW)
 	{
@@ -111,25 +119,29 @@ void evasionProtocol()
 	*/
 	
 	if (srvScanL == LOW && srvScanR == HIGH) //An obstacle is detect in the left side but not in the right side
-	{											
+	{	
+    	Serial.println("Turning right...");								
 		motorSpeed(rotSpeed); //Setting rotation speed
 		motion(HIGH, LOW, LOW, HIGH); //Setting right rotation motion
       	delay(500);					
 	}
 	else if(srvScanL == HIGH && srvScanR == LOW) //An obstacle is detect in the right side but not in the left side
 	{
+    	Serial.println("Turning left...");   
     	motorSpeed(rotSpeed); //Setting rotation speed
       	motion(LOW, HIGH, HIGH, LOW); //Setting left rotation motion
       	delay(500);		
 	}
 	else if (srvScanL == HIGH && srvScanR == HIGH) //No obstacles are detected in any side
-	{
+	{ 
+    	Serial.println("i'm a powerful AI, i'll do as i wish!!"); 
     	motorSpeed(rotSpeed); //Setting rotation speed
     	motion(LOW, HIGH, HIGH, LOW); //As there is no obstacle, you could choose to make the robot rotate either left o right
     	delay(500);					
 	}
 	else //Obstacles are detect on both sides (Comment this whole section in case of using the above while loop instead of recursion)
 	{
+    	Serial.println("Going backwars..."); 
 		motorSpeed(bwdSpeed); //Setting bwd speed
       	motion(LOW, LOW, HIGH, HIGH); //Setting bwd motion
       	delay(500);
@@ -162,15 +174,17 @@ void setup()
 	myServo.write(90);
 	delay(1000);
 	myServo.detach();
+
+	Serial.begin(9600);
 }
 
 void loop()
 {
-    btnState = digitalRead(btn1); //In order to initialize the program you must press the button
+    /*btnState = digitalRead(btn1); //In order to initialize the program you must press the button
     delay(500);
     start_stop();
   
-  	while (btnValue == LOW)
+  	while (btnValue == LOW) */
  	{
 		sensor1State = digitalRead(sensor1); //Seraching for an obstacle
   	
@@ -195,6 +209,7 @@ void loop()
 
 			/* int srvScanL = servoScanLeft();
 			int srvScanR = servoScanRight(); */
+
       		evasionProtocol();
       	
         	motion(LOW, LOW, LOW, LOW);//Stoping the robot
