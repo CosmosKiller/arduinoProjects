@@ -15,7 +15,7 @@ const int btn1 = 12; //Button to initiate program
 int fwdSpeed = 255; // Motor's forward speed
 int bwdSpeed = 230; // Motor's backward speed
 int rotSpeed = 200; // Motor's rotation speed
-int sensor1State = LOW; // LOW if there is an obstacule, HIGH if there's none
+int sensor1State = HIGH; // LOW if there is an obstacule, HIGH if there's none
 int btnState = HIGH;
 int btnValue = HIGH;
 int srvScanLeft = HIGH;
@@ -41,11 +41,13 @@ void start_stop() //Function to start or stop the evader
     {
     	if (btnValue == HIGH)
         {
+			Serial.println("System initiated");
             btnValue = LOW;
             delay(500);
         }
         else
         {
+			Serial.println("System finalized");
             btnValue = HIGH;
             delay(500);
         }
@@ -102,8 +104,9 @@ void evasionProtocol()
  	myServo.write(90);
   	delay(1000);
   	myServo.detach();
-  
-	/* Erease this comment in case of using this while loop instead of recursion
+	
+	/*
+	Erease this comment in case of using this while loop instead of recursion
 	while (srvScanL == LOW && srvScanR == LOW)
 	{
 		motorSpeed(bwdSpeed); //Setting bwd speed
@@ -113,8 +116,12 @@ void evasionProtocol()
       	motion(LOW, LOW, LOW, LOW);//Stoping the robot
       	delay(500);		
 		
+  		myServo.attach(srv1);
 		int srvScanL = servoScanLeft();
 		int srvScanR = servoScanRight();
+ 		myServo.write(90);
+  		delay(1000);
+  		myServo.detach();
 	}
 	*/
 	
@@ -180,11 +187,11 @@ void setup()
 
 void loop()
 {
-    /*btnState = digitalRead(btn1); //In order to initialize the program you must press the button
+    btnState = digitalRead(btn1); //In order to initialize the program you must press the button
     delay(500);
     start_stop();
   
-  	while (btnValue == LOW) */
+  	while (btnValue == LOW)
  	{
 		sensor1State = digitalRead(sensor1); //Seraching for an obstacle
   	
@@ -217,6 +224,7 @@ void loop()
     	}
     
     	btnState = digitalRead(btn1); //This time, in order to finalize the program you must press the button
+      	delay(500);
     	start_stop();
 	}
 }
