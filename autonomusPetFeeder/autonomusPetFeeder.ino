@@ -1,5 +1,4 @@
 #include <Servo.h>
-#include <BlynkSimpleEsp8266.h>
 
 Servo servo;
 
