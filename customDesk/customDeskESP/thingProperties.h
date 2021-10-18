@@ -10,30 +10,17 @@ const char SSID[] = SECRET_SSID;    // Network SSID (name)
 const char PASS[] = SECRET_PASS;    // Network password (use for WPA, or use as key for WEP)
 const char DEVICE_KEY[] = SECRET_DEVICE_KEY;    // Secret device password
 
-void onOutlet1Change();
-void onOutlet4Change();
-void onOutlet2Change();
-void onOutlet3Change();
-void onOutlet5Change();
+void onAlexaPushValueChange();
 
-bool outlet1;
-bool outlet4;
-bool outlet2;
-bool outlet3;
-bool outlet5;
+//int alexaPushValue;
+CloudDimmedLight alexaPushValue;
 
 void initProperties()
 {
-
   ArduinoCloud.setBoardId(DEVICE_LOGIN_NAME);
   ArduinoCloud.setSecretDeviceKey(DEVICE_KEY);
   ArduinoCloud.setThingId(THING_ID);
-  ArduinoCloud.addProperty(outlet1, READWRITE, ON_CHANGE, onOutlet1Change);
-  ArduinoCloud.addProperty(outlet4, READWRITE, ON_CHANGE, onOutlet4Change);
-  ArduinoCloud.addProperty(outlet2, READWRITE, ON_CHANGE, onOutlet2Change);
-  ArduinoCloud.addProperty(outlet3, READWRITE, ON_CHANGE, onOutlet3Change);
-  ArduinoCloud.addProperty(outlet5, READWRITE, ON_CHANGE, onOutlet5Change);
-
+  ArduinoCloud.addProperty(alexaPushValue, READWRITE, ON_CHANGE, onAlexaPushValueChange);
 }
 
 WiFiConnectionHandler ArduinoIoTPreferredConnection(SSID, PASS);

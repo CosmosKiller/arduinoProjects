@@ -31,11 +31,13 @@ int outletControll(int outlet, int outletState)
   {
     digitalWrite(outlet, LOW);
     outletState = LOW;
+    Serial.println("ON");
   }
   else
   {
     digitalWrite(outlet, HIGH);
     outletState = HIGH;
+    Serial.println("OFF");
   }
 
   return outletState;
@@ -43,6 +45,7 @@ int outletControll(int outlet, int outletState)
 
 void setup()
 {
+  Serial1.begin(9600);
   Serial.begin(9600);
   dht.begin();
 
@@ -66,18 +69,14 @@ void loop()
   humudity = dht.readHumidity();
   temperature = dht.readTemperature();
 
-  int incomingInt;
-  if (Serial.available() > 0)
+  char incomingValue;
+  if (Serial1.available())
   {
-    incomingInt = Serial.read();
-    delay(500);
-  }
+    incomingValue = Serial1.read();
 
-  if (incomingInt >= 'A')
-  {
-    switch (incomingInt)
+    switch (incomingValue)
     {
-    case 'w':
+    case 'w' :
       analogWrite(rgbLed[0], 255);
       analogWrite(rgbLed[1], 255);
       analogWrite(rgbLed[2], 255);
@@ -107,23 +106,15 @@ void loop()
       analogWrite(rgbLed[2], 0);
       break;      
     
-    case 't':
-      Serial.print("La temperatura es de ");
-      Serial.print(temperature, 2);
-      Serial.println(" °C");
-      Serial.print("La humedad relativa es del ");
-      Serial.print(humudity, 2);
-      Serial.println("%");
+    case 'a':
+      Serial1.print("La temperatura es de ");
+      Serial1.print(temperature, 2);
+      Serial1.println(" °C");
+      Serial1.print("La humedad relativa es del ");
+      Serial1.print(humudity, 2);
+      Serial1.println("%");
       break;
-
-    default:
-      break;
-    }
-  }
-  else
-  {
-    switch (incomingInt)
-    {
+  
     case '1':
       outletStateArray[0] = outletControll(outletArray[0], outletStateArray[0]);
       break;
@@ -166,6 +157,19 @@ void loop()
       {
         outletStateArray[i] = outletControll(outletArray[i], outletStateArray[i]);
       }
+      break;
+
+    case '0':
+      for (int i = 0; i < oasSize; i++)
+      {
+        outletStateArray[i] = LOW;
+      }
+      
+      for (int i = 0; i < oasSize; i++)
+      {
+        outletStateArray[i] = outletControll(outletArray[i], outletStateArray[i]);
+      }
+      break;
 
     default:
       break;
