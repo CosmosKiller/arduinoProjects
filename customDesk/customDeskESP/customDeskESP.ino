@@ -1,10 +1,12 @@
 /*
-The source code used to recibe all of the orders given by the user via Wi-Fi, using Alexa Skills or Google Home Routines.
+The source code used to recibe all of the orders given by the user via Wi-Fi,using Alexa Skills
+or Google Home Routines.
 It then send the order to the MEGA2560 through the Serial Pins (TX/RX)
 */
 
 #include "thingProperties.h"
 
+//Define variables
 int tempValue = 0;
 
 void setup()

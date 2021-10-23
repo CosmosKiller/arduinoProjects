@@ -1,9 +1,12 @@
 /*
-The source code used to manage all the I/O functionalities, reciving the commands from the ESP8266 via the serial pins (TX0/RX0)
+The source code used to manage all the I/O functionalities, reciving 
+the commands from the ESP8266 via the serial pins (TX0/RX0)
+It can also be used to return information such as temperature, humidity and
+polution messurements
 */
 
 #include <DHT.h>
-//#include "serialComLib.h"
+#include "customDesk.h"
 
 //Defining and initiating the DHT22 Sensor
 #define DHTPIN 39
@@ -26,24 +29,6 @@ const int rgbLed[] = {4, 3, 2};
 float humudity, temperature;
 int incomingValue[4] = {0};
 bool valueComplete = false;
-
-int outletControll(int outlet, int outletState)
-{
-  if (outletState == HIGH)
-  {
-    digitalWrite(outlet, LOW);
-    outletState = LOW;
-    Serial.println("ON");
-  }
-  else
-  {
-    digitalWrite(outlet, HIGH);
-    outletState = HIGH;
-    Serial.println("OFF");
-  }
-
-  return outletState;
-}
 
 void setup()
 {
@@ -75,61 +60,9 @@ void loop()
   {
     if (incomingValue[0] < 10)
     {
-      switch (incomingValue[0])
-      {
-      case 1:
-        outletStateArray[0] = outletControll(outletArray[0], outletStateArray[0]);
-        break;
-      
-      case 2:
-        outletStateArray[1] = outletControll(outletArray[1], outletStateArray[1]);
-        break;
-
-      case 3:
-        outletStateArray[2] = outletControll(outletArray[2], outletStateArray[2]);
-        break;
-
-      case 4:
-        outletStateArray[3] = outletControll(outletArray[3], outletStateArray[3]);
-        break;
-
-      case 5:
-        outletStateArray[4] = outletControll(outletArray[4], outletStateArray[4]);
-        break;
-
-      case 6:
-        outletStateArray[5] = outletControll(outletArray[5], outletStateArray[5]);
-        break;
-
-      case 7:
-        outletStateArray[6] = outletControll(outletArray[6], outletStateArray[6]);
-        break;
-
-      case 8:
-        outletStateArray[7] = outletControll(outletArray[7], outletStateArray[7]);
-        break;
-
-      case 9:
-        for (int i = 0; i < oasSize; i++) 
-        {
-          outletStateArray[i] = HIGH;
-          outletStateArray[i] = outletControll(outletArray[i], outletStateArray[i]);
-        }
-        break;
-
-      case 0:
-        for (int i = 0; i < oasSize; i++)
-        {
-          outletStateArray[i] = LOW;
-          outletStateArray[i] = outletControll(outletArray[i], outletStateArray[i]);
-        }
-        break;
-        
-      default:
-        break;
-      }
+      powerControll();
     }
-    else if (incomingValue[0] >= 10 && incomingValue[0] < 20)
+    else if (incomingValue[0] < 20 && incomingValue[0] >= 10)
     {
       analogWrite(rgbLed[0], incomingValue[1]);
       analogWrite(rgbLed[1], incomingValue[2]);
