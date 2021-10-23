@@ -5,6 +5,8 @@ It then send the order to the MEGA2560 through the Serial Pins (TX/RX)
 
 #include "thingProperties.h"
 
+int tempValue = 0;
+
 void setup()
 {
   // Initialize serial and wait for port to open:
@@ -32,16 +34,66 @@ void setup()
 void loop()
 {
   ArduinoCloud.update();
+  onAlexaDHTValuechange();
+}
+
+void onAlexaDHTValuechange()
+{
+  int sendValue[] = {20, 0, 0, 0}; 
+
+  for (int i = 0; i < 4; i++)
+  {
+    Serial.write(sendValue[i]);
+  }
+  if (Serial.available())
+  {
+    tempValue = Serial.read();
+  }
+
+  alexaDHTValue = (float)tempValue;
+  delay(200);
 }
 
 void onAlexaPushValueChange()
 {
-  float alexaFloatValue;
-  alexaFloatValue = alexaPushValue.getBrightness();
+  //Read the incoming value sended by Alexa
+  float alexaFloatValue = alexaPushValue.getBrightness();
   
-  int alexaIntValue;
-  alexaIntValue = (int)alexaFloatValue;
-  
-  char j = alexaIntValue + '0';
-  Serial.println(j);
+  //Converting float into int
+  int sendValue[] = {(int)alexaFloatValue, 0, 0, 0};
+    
+  for (int i = 0; i < 4; i++)
+  {
+    Serial.write(sendValue[i]);
+  } 
+}
+
+void onAlexaRGBValueChange()
+{
+  if (alexaRGBValue.getSwitch())
+  {
+    //Read brightness value from Alexa
+    float rgbBrightness = alexaRGBValue.getBrightness();
+
+    //Read RGB valuves from Alexa
+    uint8_t r, g, b ;
+    alexaRGBValue.getValue().getRGB(r, g, b);
+
+    //Convert values to int
+    int sendValue[] = {10, (int)r, (int)g, (int)b}; 
+
+    for (int i = 0; i < 4; i++)
+    {
+      Serial.write(sendValue[i]);
+    } 
+  }
+  else
+  {
+    int sendValue[] = {10, 0, 0, 0}; 
+
+    for (int i = 0; i < 4; i++)
+    {
+      Serial.write(sendValue[i]);
+    } 
+  }
 }

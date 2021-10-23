@@ -11,9 +11,12 @@ const char PASS[] = SECRET_PASS;    // Network password (use for WPA, or use as 
 const char DEVICE_KEY[] = SECRET_DEVICE_KEY;    // Secret device password
 
 void onAlexaPushValueChange();
+void onAlexaRGBValueChange();
 
-//int alexaPushValue;
+
 CloudDimmedLight alexaPushValue;
+CloudColoredLight alexaRGBValue;
+CloudTemperatureSensor alexaDHTValue;
 
 void initProperties()
 {
@@ -21,6 +24,8 @@ void initProperties()
   ArduinoCloud.setSecretDeviceKey(DEVICE_KEY);
   ArduinoCloud.setThingId(THING_ID);
   ArduinoCloud.addProperty(alexaPushValue, READWRITE, ON_CHANGE, onAlexaPushValueChange);
+  ArduinoCloud.addProperty(alexaRGBValue, READWRITE, ON_CHANGE, onAlexaRGBValueChange);
+  ArduinoCloud.addProperty(alexaDHTValue, READ, ON_CHANGE, NULL, 1);
 }
 
 WiFiConnectionHandler ArduinoIoTPreferredConnection(SSID, PASS);
